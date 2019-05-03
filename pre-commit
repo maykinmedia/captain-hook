@@ -1,0 +1,15 @@
+#!/bin/bash
+# Use this script in combination with the pre-commit.d directory inside .git/hooks/
+# to run multiple scripts before commiting
+
+if [ ! -d .git/ ]; then
+    echo "Please commit from the project root directory"
+    exit 1
+fi
+
+for file in .git/hooks/pre-commit.d/*;
+do
+    echo "Running $file"
+    . $file
+done
+
