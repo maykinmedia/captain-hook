@@ -37,6 +37,11 @@ if [ ! -z "$STAGED_FILES" ]; then
     # Format all selected files
     echo "$FILES" | xargs "$formatter" "$options"
 
+    # Check for the exit code
+    if [ $? -ne 0 ]; then
+        exit 1
+    fi
+
     # Add back the modified/prettified files to staging
     echo "$FILES" | xargs git add -u
 
