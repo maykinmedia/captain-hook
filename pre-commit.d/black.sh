@@ -1,20 +1,28 @@
 #!/bin/bash
 
+#
+# Run black on the files in the diff.
+#
+# 1. Virtualenv must be activated
+# 2. Black must be installed in the virtualenv (and thus be available in your
+#    path)
+# 3. Default line-length is 88 (black default)
+
 # Regexp for grep to only choose some file extensions for formatting
 exts="\.\(py\)$"
 
-# The formatter to use
-formatter="$HOME/.pyenv/shims/black"
-
-options="-l $BLACK_LINE_LENGTH"
-
-# Check availability of the formatter
-if [ -z "$formatter" ]
-then
-  1>&2 echo "$formatter not found. Pre-commit formatting will not be done."
-  exit 1
+if  [ -z $VIRTUAL_ENV ]; then
+    1>&2 echo "Ensure your virtualenv is activated."
+    exit 1
 fi
 
+BLACK_LINE_LENGTH=${BLACK_LINE_LENGTH:-88}
+
+# The formatter to use
+# default -> available in venv or $PATH
+formatter=${BLACK_BIN:-black}
+
+options="-l $BLACK_LINE_LENGTH"
 
 # Check availability of the formatter
 if [ -z "$formatter" ]
