@@ -8,8 +8,6 @@
 #    path)
 #
 #
-# Regexp for grep to only choose some file extensions for formatting
-exts="\.\(py\)$"
 
 if  [ -z $VIRTUAL_ENV ]; then
     1>&2 echo "Ensure your virtualenv is activated."
@@ -27,10 +25,9 @@ then
   exit 1
 fi
 
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM "$exts" | sed 's| |\\ |g')
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM -- '*.py' | sed 's| |\\ |g')
 
 CHANGED_UNSTAGED_FILES=$(git diff --name-only)
-
 
 if [ ! -z "$STAGED_FILES" ]; then
     if [ ! -z "$CHANGED_UNSTAGED_FILES" ]; then

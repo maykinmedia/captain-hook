@@ -8,9 +8,6 @@
 #    path)
 # 3. Default line-length is 88 (black default)
 
-# Regexp for grep to only choose some file extensions for formatting
-exts="\.\(py\)$"
-
 if  [ -z $VIRTUAL_ENV ]; then
     1>&2 echo "Ensure your virtualenv is activated."
     exit 1
@@ -31,7 +28,7 @@ then
   exit 1
 fi
 
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM "$exts" | sed 's| |\\ |g')
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM -- '*.py' | sed 's| |\\ |g')
 
 CHANGED_UNSTAGED_FILES=$(git diff --name-only)
 
