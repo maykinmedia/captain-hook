@@ -1,14 +1,20 @@
-#!/bin/bash
+#!/usr/bin/env python
 # Use this script in combination with the pre-commit.d directory inside .git/hooks/
 # to run multiple scripts before commiting
 
-if [ ! -d .git/ ]; then
-    echo "Please commit from the project root directory"
-    exit 1
-fi
+import os
+import subprocess
+import sys
 
-for file in .git/hooks/pre-commit.d/*;
-do
-    echo "Running $file"
-    ./$file
-done
+if not os.path.isdir(".git"):
+    sys.exit("Please commit from the project root directory")
+
+files = os.scandir(".git/hooks/pre-commit.d/")
+
+for executable in files:
+    try:
+        subprocess.check_output(
+            [executable.path], text=True, stderr=subprocess.STDOUT
+        )
+    except subprocess.CalledProcessError as e:
+        sys.exit(e.stdout)
