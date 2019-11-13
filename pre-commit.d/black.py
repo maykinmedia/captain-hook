@@ -4,34 +4,38 @@ import os
 import subprocess
 import sys
 
-file_extensions = (".py",)
-
-user_dir = os.path.expanduser("~")
-formatter_path = os.path.join(user_dir, ".")
+from shutil import which
 
 if not os.getenv("VIRTUAL_ENV"):
-    exit("Ensure your virtualenv is activated.", 1)
+    sys.exit("Ensure your virtualenv is activated.")
 
+file_extensions = (".py",)
 line_length = os.getenv("BLACK_LINE_LENGTH", 88)
+black = os.getenv("BLACK_BIN", "black")
+options = ["-l", str(line_length),]
 
-formatter = os.getenv("BLACK_BIN", "black")
-options = f"-l {line_length}"
+if not which(black):
+    sys.exit("Black binary not found")
 
-if not os.path.isfile(formatter):
-    exit(f"Formatter not found in {formatter}", 1)
-
-files = subprocess.check_output(
-    ["git", "diff", "--cached", "--name-only", "--diff-filter", "ACM", "-- '*.py'"],
+diff = subprocess.check_output(
+    ["git", "diff", "--cached", "--name-only", "--diff-filter", "ACM"],
+    text=True
 )
 
-if not files:
-    sys.exit("No files left to format", 0)
+python_files = [
+    item for item in diff.splitlines() if item.endswith(file_extensions)
+]
 
-try
-    output = subprocess.check_output(["formatter", *files])
-except CalledProcessError as e:
-    print(f"Formatting was unsuccessful")
-    sys.exit(output.stdout, 1)
+if not python_files:
+    sys.exit(0)
 
-subprocess.run(["git", "add", "-u", *files])
-sys.exit("Black ran successfully", 0)
+try:
+    output = subprocess.check_output(
+        [black, *options, *python_files], text=True, stderr=subprocess.STDOUT
+    )
+except subprocess.CalledProcessError as e:
+    print("Formatting was unsuccessful:")
+    sys.exit(e.stdout)
+
+subprocess.run(["git", "add", "-u", *python_files])
+sys.exit(0)

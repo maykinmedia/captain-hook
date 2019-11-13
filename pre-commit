@@ -10,6 +10,5 @@ fi
 for file in .git/hooks/pre-commit.d/*;
 do
     echo "Running $file"
-    . $file
+    ./$file
 done
-
