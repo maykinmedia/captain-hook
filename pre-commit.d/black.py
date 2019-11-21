@@ -19,7 +19,7 @@ if not which(black):
 
 diff = subprocess.check_output(
     ["git", "diff", "--cached", "--name-only", "--diff-filter", "ACM"],
-    text=True
+    universal_newlines=True
 )
 
 python_files = [
@@ -31,7 +31,7 @@ if not python_files:
 
 try:
     output = subprocess.check_output(
-        [black, *options, *python_files], text=True, stderr=subprocess.STDOUT
+        [black, *options, *python_files], universal_newlines=True, stderr=subprocess.STDOUT
     )
 except subprocess.CalledProcessError as e:
     print("Formatting was unsuccessful:")

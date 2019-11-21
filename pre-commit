@@ -14,7 +14,7 @@ files = os.scandir(".git/hooks/pre-commit.d/")
 for executable in files:
     try:
         subprocess.check_output(
-            [executable.path], text=True, stderr=subprocess.STDOUT
+            [executable.path], universal_newlines=True, stderr=subprocess.STDOUT
         )
     except subprocess.CalledProcessError as e:
         sys.exit(e.stdout)
