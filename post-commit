@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+# Use this script in combination with the post-commit.d directory inside .git/hooks/
+# to run multiple scripts after commiting
+
+import os
+import subprocess
+import sys
+
+if not os.path.isdir(".git"):
+    sys.exit("Please commit from the project root directory")
+
+files = os.scandir(".git/hooks/post-commit.d/")
+
+for executable in files:
+    try:
+        subprocess.check_output(
+            [executable.path], universal_newlines=True, stderr=subprocess.STDOUT
+        )
+    except subprocess.CalledProcessError as e:
+        sys.exit(e.stdout)
