@@ -10,12 +10,13 @@ if not os.getenv("VIRTUAL_ENV"):
     sys.exit("Ensure your virtualenv is activated.")
 
 file_extensions = (".py",)
-line_length = os.getenv("BLACK_LINE_LENGTH", 88)
-black = os.getenv("BLACK_BIN", "black")
-options = ["-l", str(line_length),]
+autoflake = os.getenv("AUTOFLAKE_BIN", "autoflake")
+options = [
+    "--in-place", "--remove-unused-variables", "--ignore-init-module-imports"
+]
 
-if not which(black):
-    sys.exit("Black binary not found")
+if not which(autoflake):
+    sys.exit("Autoflake binary not found")
 
 diff = subprocess.check_output(
     ["git", "diff", "--cached", "--name-only", "--diff-filter", "ACM"],
@@ -31,7 +32,7 @@ if not python_files:
 
 try:
     output = subprocess.check_output(
-        [black, *options, *python_files],
+        [autoflake, *options, *python_files],
         universal_newlines=True,
         stderr=subprocess.STDOUT
     )
