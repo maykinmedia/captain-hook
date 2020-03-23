@@ -12,7 +12,10 @@ if not os.getenv("VIRTUAL_ENV"):
 file_extensions = (".py",)
 autoflake = os.getenv("AUTOFLAKE_BIN", "autoflake")
 options = [
-    "--in-place", "--remove-unused-variables", "--ignore-init-module-imports"
+    "--in-place",
+    "--remove-unused-variables",
+    "--remove-all-unused-imports",
+    "--ignore-init-module-imports"
 ]
 
 if not which(autoflake):
