@@ -10,8 +10,8 @@ if not os.getenv("VIRTUAL_ENV"):
     sys.exit("Ensure your virtualenv is activated.")
 
 file_extensions = (".js", ".jsx",)
-prettier = os.getenv("PRETTIER_BIN", "npx prettier")
-options = []
+prettier = os.getenv("PRETTIER_BIN", "./node_modules/.bin/prettier")
+options = ["--write"]
 
 if not which(prettier):
     sys.exit("Prettier binary not found")
