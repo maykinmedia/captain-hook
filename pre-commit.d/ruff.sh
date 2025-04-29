@@ -17,6 +17,7 @@ if [ ! -z "$STAGED_FILES" ]; then
         git stash --keep-index
     fi
 
+    echo "Running ruff..."
     # Format all selected files
     echo "$STAGED_FILES" | xargs "ruff" "check" "--fix"
     echo "$STAGED_FILES" | xargs "ruff" "format"

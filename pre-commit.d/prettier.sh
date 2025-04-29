@@ -7,7 +7,7 @@
 formatter=${PRETTIER_BIN:-./node_modules/.bin/prettier}
 
 if [ ! -f "$formatter" ]; then
-    exit 0
+    return 0
 fi
 
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM -- '*.js' '*.scss' | sed 's| |\\ |g')
