@@ -8,24 +8,12 @@
 #    path)
 # 3. Default line-length is 88 (black default)
 
+# check if we have ruff installed and exit early if we do
+command -v ruff && exit 0
+
 if  [ -z $VIRTUAL_ENV ]; then
     1>&2 echo "Ensure your virtualenv is activated."
     exit 1
-fi
-
-BLACK_LINE_LENGTH=${BLACK_LINE_LENGTH:-88}
-
-# The formatter to use
-# default -> available in venv or $PATH
-formatter=${BLACK_BIN:-black}
-
-options="-l $BLACK_LINE_LENGTH"
-
-# Check availability of the formatter
-if [ -z "$formatter" ]
-then
-  1>&2 echo "$formatter not found. Pre-commit formatting will not be done."
-  exit 1
 fi
 
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM -- '*.py' | sed 's| |\\ |g')
@@ -40,7 +28,7 @@ if [ ! -z "$STAGED_FILES" ]; then
 	fi
 
     # Format all selected files
-    echo "$STAGED_FILES" | xargs "$formatter" "$options"
+    echo "$STAGED_FILES" | xargs "black"
 
     # Check for the exit code
     if [ $? -ne 0 ]; then
