@@ -9,7 +9,9 @@
 #
 #
 # check if we have ruff installed and exit early if we do
-command -v ruff && exit 0
+if command -v ruff >/dev/null; then
+  return 0
+fi
 
 
 if  [ -z $VIRTUAL_ENV ]; then

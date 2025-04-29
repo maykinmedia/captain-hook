@@ -1,14 +1,17 @@
 #!/bin/bash
 
+# Run prettier on the files in the diff.
 #
-# Run ruff on the files in the diff.
-#
+# Tests if prettier exists
 
-# check if we have ruff installed
-command -v ruff || exit 0
+formatter=${PRETTIER_BIN:-./node_modules/.bin/prettier}
 
+if [ ! -f "$formatter" ]; then
+    return 0
+fi
 
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM -- '*.py' | sed 's| |\\ |g')
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM -- '*.js' '*.scss' | sed 's| |\\ |g')
+
 CHANGED_UNSTAGED_FILES=$(git diff --name-only)
 
 if [ ! -z "$STAGED_FILES" ]; then
@@ -17,10 +20,8 @@ if [ ! -z "$STAGED_FILES" ]; then
         git stash --keep-index
     fi
 
-    echo "Running ruff..."
     # Format all selected files
-    echo "$STAGED_FILES" | xargs "ruff" "check" "--fix"
-    echo "$STAGED_FILES" | xargs "ruff" "format"
+    echo "$STAGED_FILES" | xargs "$formatter" --write
 
     # Check for the exit code
     if [ $? -ne 0 ]; then
